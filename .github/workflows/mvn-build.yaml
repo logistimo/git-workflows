@@ -7,6 +7,13 @@ name: Java CI with Maven
 
 on:
   workflow_call:
+    inputs:
+      store_artifacts:
+        required: true
+        type: string
+      artifacts_name:
+        required: false
+        type: string
     secrets:
       packages_user:
         required: true
@@ -46,14 +53,14 @@ jobs:
       - name: Scan code
         run: buildscripts/scan.sh ${{ env.APP_VERSION }} ${{ env.SHORT_COMMIT_SHA }} ${{ secrets.sonar_access_token }}
       - name: Copy build artifacts (optional)
-        if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+        if: ${{ inputs.store_artifacts == 'true' }}
         run: buildscripts/copyartifacts.sh __artifacts
       - name: List artifacts (optional)
-        if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+        if: ${{ inputs.store_artifacts == 'true' }}
         run: echo $(ls __artifacts)
       - name: Upload artifacts (optional)
-        if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+        if: ${{ inputs.store_artifacts == 'true' }}
         uses: actions/upload-artifact@v3
         with:
-          name: build-artifacts
+          name: ${{ inputs.artifacts_name }}
           path: __artifacts
