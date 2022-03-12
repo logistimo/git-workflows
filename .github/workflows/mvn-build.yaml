@@ -28,7 +28,7 @@ on:
 
 jobs:
   install_packages:
-    name: Install mavan project and scan code using build scripts
+    name: Build, scan and test (optional)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -63,7 +63,7 @@ jobs:
 
   build_image:
     name: Build and push docker image
-    if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+    if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-deploytodev')
     needs: install_packages
     uses: logistimo/git-workflows/.github/workflows/docker-build.yaml@main
     with:
