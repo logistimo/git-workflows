@@ -23,6 +23,7 @@ on:
       aws_secret_access_key:
         required: true
 
+jobs:
   build_push_image:
     name: Build and push image to AWS ECR
     runs-on: ubuntu-latest
