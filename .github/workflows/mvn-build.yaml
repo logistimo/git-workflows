@@ -7,13 +7,6 @@ name: Java CI with Maven
 
 on:
   workflow_call:
-    inputs:
-      repository_name:
-        required: false
-        type: string
-      aws_region:
-        required: false
-        type: string
     secrets:
       packages_user:
         required: true
@@ -21,15 +14,14 @@ on:
         required: true
       sonar_access_token:
         required: true
-      aws_access_key_id:
-        required: false
-      aws_secret_access_key:
-        required: false
 
 jobs:
   install_packages:
     name: Build, scan and test (optional)
     runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.vars.outputs.app_version }}
+      short_commit_sha: ${{ steps.vars.outputs.short_commit_sha }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -41,11 +33,16 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Get build variables
+        id: vars
         run: |
           echo "APP_VERSION=$(./buildscripts/getversion.sh)" >> $GITHUB_ENV
           echo "SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "::set-output name=app_version::$APP_VERSION"
+          echo "::set-output name=short_commit_sha::SHORT_COMMIT_SHA"
       - name: Build packages
         run: buildscripts/build.sh install ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
+      - name: Print ver and sha
+        run: echo "app_version = " ${{ steps.vars.outputs.app_version }} "short_sha = " ${{ steps.vars.outputs.short_commit_sha }}
       - name: Scan code
         run: buildscripts/scan.sh ${{ env.APP_VERSION }} ${{ env.SHORT_COMMIT_SHA }} ${{ secrets.sonar_access_token }}
       - name: Copy build artifacts (optional)
@@ -60,17 +57,3 @@ jobs:
         with:
           name: build-artifacts
           path: __artifacts
-
-  build_image:
-    name: Build and push docker image
-    if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-deploytodev')
-    needs: install_packages
-    uses: logistimo/git-workflows/.github/workflows/docker-build.yaml@main
-    with:
-      artifacts_name: build-artifacts
-      repository_name: ${{ inputs.repository_name }}
-      image_tag: ${{ env.APP_VERSION }}-${{ env.SHORT_COMMIT_SHA }}
-      aws_region: ${{ inputs.aws_region }}
-    secrets:
-      aws_access_key_id: ${{ secrets.aws_access_key_id }}
-      aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
