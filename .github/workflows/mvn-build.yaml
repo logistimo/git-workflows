@@ -1,0 +1,76 @@
+# This workflow will build a Java project with Maven and scan code. It requires that the repo has the files:
+#  buildscripts/build.sh and buildscripts/scan.sh
+# The
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI with Maven
+
+on:
+  workflow_call:
+    inputs:
+      repository_name:
+        required: false
+        type: string
+      aws_region:
+        required: false
+        type: string
+    secrets:
+      packages_user:
+        required: true
+      packages_access_token:
+        required: true
+      sonar_access_token:
+        required: true
+      aws_access_key_id:
+        required: false
+      aws_secret_access_key:
+        required: false
+
+jobs:
+  install_packages:
+    name: Install mavan project and scan code using build scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Get build variables
+        run: |
+          echo "APP_VERSION=$(./buildscripts/getversion.sh)" >> $GITHUB_ENV
+          echo "SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      - name: Build packages
+        run: buildscripts/build.sh install ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
+      - name: Scan code
+        run: buildscripts/scan.sh ${{ env.APP_VERSION }} ${{ env.SHORT_COMMIT_SHA }} ${{ secrets.sonar_access_token }}
+      - name: Copy build artifacts (optional)
+        if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+        run: buildscripts/copyartifacts.sh __artifacts
+      - name: List artifacts (optional)
+        if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+        run: echo $(ls __artifacts)
+      - name: Upload artifacts (optional)
+        if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: __artifacts
+
+  build_image:
+    name: Build and push docker image
+    if: github.ref_name == 'master' || github.ref_name == 'main' || endsWith(github.ref_name, '-pipeline')
+    needs: install_packages
+    uses: logistimo/git-workflows/.github/workflows/docker-build.yaml@main
+    with:
+      artifacts_name: build-artifacts
+      repository_name: ${{ inputs.repository_name }}
+      image_tag: ${{ env.APP_VERSION }}-${{ env.SHORT_COMMIT_SHA }}
+      aws_region: ${{ inputs.aws_region }}
+    secrets:
+      aws_access_key_id: ${{ secrets.aws_access_key_id }}
+      aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
