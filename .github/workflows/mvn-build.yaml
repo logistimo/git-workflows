@@ -42,22 +42,25 @@ jobs:
       - name: Get build variables
         id: vars
         run: |
-          echo "APP_VERSION=$(./buildscripts/getversion.sh)" >> $GITHUB_ENV
+          echo "APP_VERSION=$(buildscripts/getversion.sh)" >> $GITHUB_ENV
           echo "SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          echo "::set-output name=app_version::$APP_VERSION"
-          echo "::set-output name=short_commit_sha::SHORT_COMMIT_SHA"
+          echo "::set-output name=app_version::$(buildscripts/getversion.sh)"
+          echo "::set-output name=short_commit_sha::$(git rev-parse --short HEAD)"
       - name: Build packages
         run: buildscripts/build.sh install ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
       - name: Print ver and sha
-        run: echo "app_version = " ${{ steps.vars.outputs.app_version }} "short_sha = " ${{ steps.vars.outputs.short_commit_sha }}
+        run: echo "app_version = " ${{ steps.vars.outputs.app_version }} "short_commit_sha = " ${{ steps.vars.outputs.short_commit_sha }}
       - name: Scan code
-        run: buildscripts/scan.sh ${{ env.APP_VERSION }} ${{ env.SHORT_COMMIT_SHA }} ${{ secrets.sonar_access_token }}
+        run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }}
       - name: Copy build artifacts (optional)
         if: ${{ inputs.store_artifacts == 'true' }}
         run: buildscripts/copyartifacts.sh __artifacts
       - name: List artifacts (optional)
         if: ${{ inputs.store_artifacts == 'true' }}
-        run: echo $(ls __artifacts)
+        run: |
+          echo $(ls __artifacts)
+          echo $(ls __artifacts/accounting-service)
+          echo $(ls __artifacts/accounting-service/src/main)
       - name: Upload artifacts (optional)
         if: ${{ inputs.store_artifacts == 'true' }}
         uses: actions/upload-artifact@v3
