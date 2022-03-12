@@ -54,7 +54,6 @@ jobs:
           IMAGE_TAG: ${{ inputs.image_tag }}
           BRANCH_TAG: ${{ github.ref_name }}
         run: |
-          echo "ECR_REGISTRY =" $ECR_REGISTRY "ECR_REPOSITORY =" $ECR_REPOSITORY "IMAGE_TAG = " $IMAGE_TAG "BRANCH_TAG = " $BRANCH_TAG
           docker build ${{ inputs.build_arguments }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG .
           docker push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
           echo "Pushed image with tags" $IMAGE_TAG "and" $BRANCH_TAG

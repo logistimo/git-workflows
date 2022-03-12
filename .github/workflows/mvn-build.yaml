@@ -53,24 +53,15 @@ jobs:
           echo "::set-output name=short_commit_sha::$(git rev-parse --short HEAD)"
       - name: Build packages
         run: buildscripts/build.sh install ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
-      - name: Print ver and sha
-        run: echo "app_version = " ${{ steps.vars.outputs.app_version }} "short_commit_sha = " ${{ steps.vars.outputs.short_commit_sha }}
       - name: Scan code
         run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }}
-      - name: Copy build artifacts (optional)
+      - name: Copy artifacts (optional)
         if: ${{ inputs.store_artifacts == 'true' }}
         run: buildscripts/copyartifacts.sh __artifacts
-      - name: List artifacts (optional)
-        if: ${{ inputs.store_artifacts == 'true' }}
-        run: |
-          echo $(ls __artifacts)
-          echo $(ls __artifacts/accounting-service)
-          echo $(ls __artifacts/accounting-service/target)
-          echo $(ls __artifacts/accounting-service/src/main)
-          echo $(ls __artifacts/accounting-service/src/main/docker)
       - name: Upload artifacts (optional)
         if: ${{ inputs.store_artifacts == 'true' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifacts_name }}
           path: __artifacts
+          retention-days: 1
