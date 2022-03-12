@@ -21,6 +21,13 @@ on:
         required: true
       sonar_access_token:
         required: true
+    outputs:
+      app_version:
+        description: "App. version"
+        value: ${{ jobs.install_packages.outputs.app_version }}
+      short_commit_sha:
+        description: "Short commit SHA"
+        value: ${{ jobs.install_packages.outputs.short_commit_sha }}
 
 jobs:
   install_packages:
@@ -42,8 +49,6 @@ jobs:
       - name: Get build variables
         id: vars
         run: |
-          echo "APP_VERSION=$(buildscripts/getversion.sh)" >> $GITHUB_ENV
-          echo "SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "::set-output name=app_version::$(buildscripts/getversion.sh)"
           echo "::set-output name=short_commit_sha::$(git rev-parse --short HEAD)"
       - name: Build packages
