@@ -8,6 +8,9 @@ on:
       artifacts_name:
         required: true
         type: string
+      remove_artifacts:
+        required: true
+        type: string
       repository_name:
         required: true
         type: string
@@ -52,3 +55,8 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG .
           docker push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
           echo "Pushed image with tags" $IMAGE_TAG "and" $BRANCH_TAG
+      - name: Remove artifacts (optional)
+        if: ${{ inputs.remove_artifacts == 'true' }}
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: ${{ inputs.artifacts_name }}
