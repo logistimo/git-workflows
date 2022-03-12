@@ -65,7 +65,9 @@ jobs:
         run: |
           echo $(ls __artifacts)
           echo $(ls __artifacts/accounting-service)
+          echo $(ls __artifacts/accounting-service/target)
           echo $(ls __artifacts/accounting-service/src/main)
+          echo $(ls __artifacts/accounting-service/src/main/docker)
       - name: Upload artifacts (optional)
         if: ${{ inputs.store_artifacts == 'true' }}
         uses: actions/upload-artifact@v3
