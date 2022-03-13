@@ -8,26 +8,45 @@ name: Java CI with Maven
 on:
   workflow_call:
     inputs:
-      store_artifacts:
+      build_type:
         required: true
         type: string
+        description: "The type of build - maven | node"
+      working_directory:
+        required: false
+        type: string
+        default: "."
+      store_artifacts:
+        required: false
+        type: boolean
+        default: false
+        description: "true | false - if true, the build artifacts are stored and identified using artifacts_name"
       artifacts_name:
         required: false
         type: string
+        description: "artifacts key for storing artifacts for later use in another job/workflow (e.g. create docker image)"
     secrets:
       packages_user:
         required: true
+        description: "Github packages user"
       packages_access_token:
         required: true
+        description: "Gihub packages access token"
       sonar_access_token:
         required: true
+        description: "SonarQube access token"
     outputs:
       app_version:
-        description: "App. version"
         value: ${{ jobs.install_packages.outputs.app_version }}
+        description: "App. version"
       short_commit_sha:
-        description: "Short commit SHA"
         value: ${{ jobs.install_packages.outputs.short_commit_sha }}
+        description: "Short commit SHA"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ${{ inputs.working_directory }}
 
 jobs:
   install_packages:
@@ -41,11 +60,17 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up JDK 8
+        if: ${{ inputs.build_type == 'maven' }}
         uses: actions/setup-java@v2
         with:
           java-version: '8'
           distribution: 'temurin'
           cache: 'maven'
+      - uses: actions/setup-node@v2
+        if: ${{ inputs.build_type == 'node' }}
+        with:
+          node-version: '14'
+          cache: 'npm'
       - name: Get build variables
         id: vars
         run: |
