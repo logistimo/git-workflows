@@ -8,26 +8,36 @@ on:
       artifacts_name:
         required: true
         type: string
+        description: "Key to artifacts cache to download build artifacts"
       remove_artifacts:
-        required: true
-        type: string
+        required: false
+        type: boolean
+        default: true
+        description: "true | false - if true, removes the cached artifacts"
       repository_name:
         required: true
         type: string
+        description: "Name of the repository for the docker image"
       image_tag:
         required: true
         type: string
+        description: "Image tag"
       build_arguments:
-        required: true
+        required: false
         type: string
+        default: ''
+        description: "Docker build arguments such as '--build-arg=X=Y --build-arg=A=B'"
       aws_region:
         required: true
         type: string
+        description: "AWS region such as us-east-1"
     secrets:
       aws_access_key_id:
         required: true
+        description: "AWS IAM user's access key ID"
       aws_secret_access_key:
         required: true
+        description: "AWS IAM user's secret access key"
 
 jobs:
   build_push_image:
@@ -58,7 +68,7 @@ jobs:
           docker push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
           echo "Pushed image with tags" $IMAGE_TAG "and" $BRANCH_TAG
       - name: Remove artifacts (optional)
-        if: ${{ inputs.remove_artifacts == 'true' }}
+        if: ${{ inputs.remove_artifacts }}
         uses: geekyeggo/delete-artifact@v1
         with:
           name: ${{ inputs.artifacts_name }}
