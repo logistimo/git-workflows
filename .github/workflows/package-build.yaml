@@ -81,10 +81,10 @@ jobs:
       - name: Scan code
         run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }}
       - name: Copy artifacts (optional)
-        if: ${{ inputs.store_artifacts == 'true' }}
+        if: ${{ inputs.store_artifacts }}
         run: buildscripts/copyartifacts.sh __artifacts
       - name: Upload artifacts (optional)
-        if: ${{ inputs.store_artifacts == 'true' }}
+        if: ${{ inputs.store_artifacts }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifacts_name }}
