@@ -16,6 +16,7 @@ on:
         required: false
         type: string
         default: "."
+        description: "Working directory for the run steps"
       store_artifacts:
         required: false
         type: boolean
@@ -43,10 +44,6 @@ on:
         value: ${{ jobs.install_packages.outputs.short_commit_sha }}
         description: "Short commit SHA"
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ${{ inputs.working_directory }}
 
 jobs:
   install_packages:
@@ -73,20 +70,24 @@ jobs:
           cache: 'npm'
       - name: Get build variables
         id: vars
+        working-directory: ${{ inputs.working_directory }}
         run: |
           echo "::set-output name=app_version::$(buildscripts/getversion.sh)"
           echo "::set-output name=short_commit_sha::$(git rev-parse --short HEAD)"
       - name: Build packages
+        working-directory: ${{ inputs.working_directory }}
         run: buildscripts/build.sh install ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
       - name: Scan code
+        working-directory: ${{ inputs.working_directory }}
         run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }}
       - name: Copy artifacts (optional)
         if: ${{ inputs.store_artifacts }}
+        working-directory: ${{ inputs.working_directory }}
         run: buildscripts/copyartifacts.sh __artifacts
       - name: Upload artifacts (optional)
         if: ${{ inputs.store_artifacts }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifacts_name }}
-          path: __artifacts
+          path: ${{ inputs.working_directory }}/__artifacts
           retention-days: 1
