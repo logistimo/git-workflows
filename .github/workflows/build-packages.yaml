@@ -25,7 +25,7 @@ on:
       working_directory:
         required: false
         type: string
-        default: "."
+        default: '.'
         description: "Working directory for the run steps"
       store_artifacts:
         required: false
@@ -35,7 +35,8 @@ on:
       artifacts_name:
         required: false
         type: string
-        description: "Stored artifacts name"
+        default: ''
+        description: "Stored artifacts name, if needed"
     secrets:
       packages_user:
         required: true
@@ -44,8 +45,8 @@ on:
         required: true
         description: "Gihub packages access token"
       sonar_access_token:
-        required: true
-        description: "SonarQube access token"
+        required: false
+        description: "SonarQube access token - required if scanning"
     outputs:
       app_version:
         value: ${{ jobs.install_packages.outputs.app_version }}
@@ -88,6 +89,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
         run: buildscripts/build.sh ${{ inputs.build_target }} ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
       - name: Scan code
+        if: ${{ !inputs.skip_scanning }}
         working-directory: ${{ inputs.working_directory }}
         run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }}
       - name: Copy artifacts (optional)
