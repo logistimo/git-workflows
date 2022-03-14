@@ -1,6 +1,5 @@
-# This workflow will build a Java project with Maven and scan code. It requires that the repo has the files:
+# This workflow will build packages (either install/deploy) and scan code. The code repository has the files:
 #  buildscripts/build.sh and buildscripts/scan.sh
-# The
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
 name: Build packages
