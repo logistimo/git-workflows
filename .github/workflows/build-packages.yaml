@@ -1,5 +1,6 @@
 # This workflow will build packages (either install/deploy) and scan code. The code repository has the files:
 #  buildscripts/build.sh and buildscripts/scan.sh
+# build_target of 'deploy' will install as well as publish a package to the artifact repository specified in the corresponding pom.xml.
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
 name: Build packages
