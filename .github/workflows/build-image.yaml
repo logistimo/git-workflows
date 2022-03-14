@@ -1,4 +1,4 @@
-# A workflow to build a docker image and push to container registry (AWS ECR)
+# A workflow to build a docker image and pushes to container registry (AWS ECR)
 
 name: Docker build and push
 
