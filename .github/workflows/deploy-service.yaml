@@ -1,0 +1,54 @@
+# Deploy service to a Kubernetes namespace using Helm (v3) charts
+
+name: Deploy to a Kubernetes namespace using Helm 3
+
+on:
+  workflow_call:
+    inputs:
+      release_name:
+        required: true
+        type: string
+        description: "Release name used in a Helm chart"
+      values_files:
+        required: true
+        type: string
+        description: "CSV of one or more values files each single quoted, e.g. '../logi-fleet/values-test.yaml','./values-test'"
+      image_tag:
+        required: true
+        type: string
+        description: "Image tag to override that in the values file"
+      namespace:
+        required: true
+        type: string
+        description: "Namespace to deploy to"
+      kube_context:
+        required: false
+        type: string
+        default: 'nonprod'
+        description: "The kubernetes context/cluster where the namespace is available"
+
+jobs:
+  deployment:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+        with:
+          repository: logistimo/fleet-deployments
+      - name: 'Deploy'
+        uses: 'deliverybot/helm@master'
+        with:
+          token: '${{ github.token }}'
+          chart: './${{ inputs.release_name }}'
+          secrets: '${{ toJSON(secrets) }}'
+          kube-context: ${{ inputs.kube_context }}
+          namespace: ${{ inputs.namespace }}
+          release: ${{ inputs.release_name }}
+          value-files: [ ${{ inputs.values_files }} ]
+          values: |
+            deployment:
+              image:
+                tag: ${{ inputs.image_tag }}
+          helm: helm3
+        env:
+          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
