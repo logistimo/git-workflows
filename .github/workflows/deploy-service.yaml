@@ -29,6 +29,7 @@ on:
 
 jobs:
   deployment:
+    name: Deploy service
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Checkout'
