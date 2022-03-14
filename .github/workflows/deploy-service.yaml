@@ -12,7 +12,7 @@ on:
       values_files:
         required: true
         type: string
-        description: "Array of values files, e.g. [ ']../logi-fleet/values-test.yaml', './values-test' ]"
+        description: "Array of values files, e.g. [../logi-fleet/values-test.yaml', './values-test' ]"
       image_tag:
         required: true
         type: string
