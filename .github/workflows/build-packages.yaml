@@ -12,6 +12,16 @@ on:
         required: true
         type: string
         description: "The type of build - maven | node"
+      build_target:
+        required: false
+        type: string
+        default: install
+        description: "Build target - install | deploy"
+      skip_scanning:
+        required: false
+        type: boolean
+        default: false
+        descritpion: "Skip scanning (true | false)"
       working_directory:
         required: false
         type: string
@@ -21,11 +31,11 @@ on:
         required: false
         type: boolean
         default: false
-        description: "true | false - if true, the build artifacts are stored and identified using artifacts_name"
+        description: "Store build artifacts - true | false"
       artifacts_name:
         required: false
         type: string
-        description: "artifacts key for storing artifacts for later use in another job/workflow (e.g. create docker image)"
+        description: "Stored artifacts name"
     secrets:
       packages_user:
         required: true
@@ -39,7 +49,7 @@ on:
     outputs:
       app_version:
         value: ${{ jobs.install_packages.outputs.app_version }}
-        description: "App. version"
+        description: "Application version"
       short_commit_sha:
         value: ${{ jobs.install_packages.outputs.short_commit_sha }}
         description: "Short commit SHA"
@@ -76,7 +86,7 @@ jobs:
           echo "::set-output name=short_commit_sha::$(git rev-parse --short HEAD)"
       - name: Build packages
         working-directory: ${{ inputs.working_directory }}
-        run: buildscripts/build.sh install ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
+        run: buildscripts/build.sh ${{ inputs.build_target }} ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
       - name: Scan code
         working-directory: ${{ inputs.working_directory }}
         run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }}
