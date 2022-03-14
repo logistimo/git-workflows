@@ -22,10 +22,14 @@ on:
         type: string
         description: "Namespace to deploy to"
       kube_context:
-        required: false
+        required: true
         type: string
-        default: 'nonprod'
         description: "The kubernetes context/cluster where the namespace is available"
+      kube_config:
+        required: true
+        type: string
+        description: "The kubeconig file with credentials to access the Kubernetes cluster and run helm/kubeconfig"
+
 
 jobs:
   deployment:
@@ -52,4 +56,4 @@ jobs:
                 tag: ${{ inputs.image_tag }}
           helm: helm3
         env:
-          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+          KUBECONFIG_FILE: '${{ inputs.kube_config }}'
