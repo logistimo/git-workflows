@@ -16,7 +16,7 @@ on:
         required: false
         type: string
         default: install
-        description: "Build target - install | deploy"
+        description: "Build target - install | deploy for maven, local | remote for node"
       skip_scanning:
         required: false
         type: boolean
@@ -94,7 +94,7 @@ jobs:
           echo "::set-output name=short_commit_sha::$(git rev-parse --short HEAD)"
       - name: Build packages
         working-directory: ${{ inputs.working_directory }}
-        run: buildscripts/build.sh ${{ inputs.build_target }} ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
+        run: buildscripts/build.sh ${{ inputs.build_target }} ${{ steps.vars.outputs.app_version }} ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
       - name: Scan code
         if: ${{ !inputs.skip_scanning }}
         working-directory: ${{ inputs.working_directory }}
