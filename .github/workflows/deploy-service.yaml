@@ -12,7 +12,7 @@ on:
       values_files:
         required: true
         type: string
-        description: "CSV of one or more values files each single quoted, e.g. '../logi-fleet/values-test.yaml','./values-test'"
+        description: "Array of values files, e.g. [ ']../logi-fleet/values-test.yaml', './values-test' ]"
       image_tag:
         required: true
         type: string
@@ -49,7 +49,7 @@ jobs:
           kube-context: ${{ inputs.kube_context }}
           namespace: ${{ inputs.namespace }}
           release: ${{ inputs.release_name }}
-          value-files: [ ${{ inputs.values_files }} ]
+          value-files: ${{ inputs.values_files }}
           values: |
             deployment:
               image:
