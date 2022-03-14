@@ -27,6 +27,11 @@ on:
         type: string
         default: '.'
         description: "Working directory for the run steps"
+      cache_dependency_path:
+        required: false
+        type: string
+        default: '.'
+        description: "Cache dependency path, where applicable, e.g. **/package.json for node"
       store_artifacts:
         required: false
         type: boolean
@@ -79,6 +84,7 @@ jobs:
         with:
           node-version: '14'
           cache: 'npm'
+          cache-dependency-path: '${{ inputs.cache_dependency_path }}'
       - name: Get build variables
         id: vars
         working-directory: ${{ inputs.working_directory }}
