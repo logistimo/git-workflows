@@ -11,7 +11,7 @@ on:
       build_type:
         required: true
         type: string
-        description: "The type of build - maven | node"
+        description: "The type of build - maven | node | maven-node"
       build_target:
         required: false
         type: string
@@ -73,14 +73,14 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up JDK 8
-        if: ${{ inputs.build_type == 'maven' }}
+        if: ${{ contains(inputs.build_type, 'maven') }}
         uses: actions/setup-java@v2
         with:
           java-version: '8'
           distribution: 'temurin'
           cache: 'maven'
       - name: Set up Node
-        if: ${{ inputs.build_type == 'node' }}
+        if: ${{ contains(inputs.build_type, 'node') }}
         uses: actions/setup-node@v2
         with:
           node-version: '11'
