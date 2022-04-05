@@ -27,6 +27,11 @@ on:
         type: string
         default: '.'
         description: "Working directory for the run steps"
+      submodules:
+        required: false
+        type: string
+        default: false
+        description: "true, if git submodules are part of the repository; recursive, if there are recursive submodules"
       cache_dependency_path:
         required: false
         type: string
@@ -72,7 +77,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          submodules: true
+          submodules: ${{ inputs.submodules }}
+          token: ${{ secrets.packages_access_token }}
       - name: Set up JDK 8
         if: ${{ contains(inputs.build_type, 'maven') }}
         uses: actions/setup-java@v2
