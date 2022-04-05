@@ -69,9 +69,10 @@ jobs:
       app_version: ${{ steps.vars.outputs.app_version }}
       short_commit_sha: ${{ steps.vars.outputs.short_commit_sha }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          submodules: true
       - name: Set up JDK 8
         if: ${{ contains(inputs.build_type, 'maven') }}
         uses: actions/setup-java@v2
