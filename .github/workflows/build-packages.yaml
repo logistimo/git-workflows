@@ -90,7 +90,7 @@ jobs:
           submodules: ${{ inputs.submodules }}
           token: ${{ secrets.packages_access_token }}
       - name: Set up JDK
-        if: ${{ contains(inputs.build_type, 'maven') }}
+        if: ${{ contains(inputs.build_type, 'maven') || contains(inputs.build_type, 'gradle') }}
         uses: actions/setup-java@v3
         with:
           java-version: '${{ inputs.java_version }}'
