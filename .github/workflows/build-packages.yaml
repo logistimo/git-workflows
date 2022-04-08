@@ -11,12 +11,22 @@ on:
       build_type:
         required: true
         type: string
-        description: "The type of build - maven | node | maven-node"
+        description: "The type of build - maven | node | 'maven node' | 'gradle' | 'gradle node', etc."
       build_target:
         required: false
         type: string
         default: install
         description: "Build target - install | deploy for maven, local | remote for node"
+      java_version:
+        required: false
+        type: string
+        default: '8'
+        description: "Version of Java, if used"
+      node_version:
+        required: false
+        type: string
+        default: '11'
+        description: "Version of Node, if used"
       skip_scanning:
         required: false
         type: boolean
@@ -79,20 +89,25 @@ jobs:
           fetch-depth: 0
           submodules: ${{ inputs.submodules }}
           token: ${{ secrets.packages_access_token }}
-      - name: Set up JDK 8
+      - name: Set up JDK
         if: ${{ contains(inputs.build_type, 'maven') }}
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          java-version: '8'
+          java-version: '${{ inputs.java_version }}'
           distribution: 'temurin'
           cache: 'maven'
       - name: Set up Node
         if: ${{ contains(inputs.build_type, 'node') }}
         uses: actions/setup-node@v2
         with:
-          node-version: '11'
+          node-version: '${{ inputs.node_version }}'
           cache: 'npm'
           cache-dependency-path: '${{ inputs.cache_dependency_path }}'
+      - name: Build with Gradle
+        if: ${{ contains(inputs.build_type, 'gradle') }}
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: build
       - name: Get build variables
         id: vars
         working-directory: ${{ inputs.working_directory }}
