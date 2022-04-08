@@ -110,11 +110,6 @@ jobs:
           node-version: '${{ inputs.node_version }}'
           cache: 'npm'
           cache-dependency-path: '${{ inputs.cache_dependency_path }}'
-      - name: Build with Gradle
-        if: ${{ contains(inputs.build_type, 'gradle') }}
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-        with:
-          arguments: build
       - name: Get build variables
         id: vars
         working-directory: ${{ inputs.working_directory }}
