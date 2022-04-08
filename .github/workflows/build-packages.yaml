@@ -89,14 +89,14 @@ jobs:
           fetch-depth: 0
           submodules: ${{ inputs.submodules }}
           token: ${{ secrets.packages_access_token }}
-      - name: Set up JDK with Maven cache
+      - name: Set up Java with Maven cache
         if: ${{ contains(inputs.build_type, 'maven') }}
         uses: actions/setup-java@v3
         with:
           java-version: '${{ inputs.java_version }}'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Set up JDK with Gradle cache
+      - name: Set up Java with Gradle cache
         if: ${{ contains(inputs.build_type, 'gradle') }}
         uses: actions/setup-java@v3
         with:
