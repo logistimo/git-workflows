@@ -91,7 +91,7 @@ jobs:
           token: ${{ secrets.packages_access_token }}
       - name: Get Java cache variable
         id: java_cache
-        run:  echo "::set-output name=cache_type::$( ( [[ '${{ inputs.build_type }}' == *'maven'* ]] && echo 'maven' ) || ( [[ '${{ inputs.build_type }}' == *'gradle'* ]] && echo 'gradle' ) || echo '' )"
+        run:  echo "::set-output name=cache_type::$( ( [[ ${{ inputs.build_type }} == *maven* ]] && echo 'maven' ) || ( [[ ${{ inputs.build_type }} == *gradle* ]] && echo 'gradle' ) || echo '' )"
       - name: Testing cache var
         run: echo "Cache var = " ${{ steps.java_cache.outputs.cache_name }}
       - name: Set up Java with cache
