@@ -93,14 +93,14 @@ jobs:
         id: java_cache
         run:  echo "::set-output name=cache_type::$( ( [[ ${{ inputs.build_type }} == *maven* ]] && echo 'maven' ) || ( [[ ${{ inputs.build_type }} == *gradle* ]] && echo 'gradle' ) || echo '' )"
       - name: Testing cache var
-        run: echo "Cache var = " ${{ steps.java_cache.outputs.cache_name }}
+        run: echo "Cache var = " ${{ steps.java_cache.outputs.cache_type }}
       - name: Set up Java with cache
  #       if: ${{ contains(inputs.build_type, 'maven') }}
         uses: actions/setup-java@v3
         with:
           java-version: '${{ inputs.java_version }}'
           distribution: 'temurin'
-          cache: ${{ steps.java_cache.outputs.cache_name }}
+          cache: ${{ steps.java_cache.outputs.cache_type }}
 #          cache: 'maven'
 #      - name: Set up Java with Gradle cache
 #        if: ${{ contains(inputs.build_type, 'gradle') }}
