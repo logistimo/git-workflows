@@ -108,9 +108,10 @@ jobs:
           cache-dependency-path: '${{ inputs.cache_dependency_path }}'
       - name: Set up ruby
         if: ${{ contains(inputs.build_type, 'ruby') }}
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7'
+          bundler-cache: true
       - name: Get build variables
         id: vars
         working-directory: ${{ inputs.working_directory }}
