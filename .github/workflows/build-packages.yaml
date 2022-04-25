@@ -11,7 +11,7 @@ on:
       build_type:
         required: true
         type: string
-        description: "The type of build - maven | node | sbt | 'maven node' | 'gradle' | 'gradle node' | 'sbt ruby', etc."
+        description: "The type of build - maven | node | sbt | 'maven node' | 'gradle' | 'gradle node' | 'sbt ruby' | java | 'node java', etc."
       build_target:
         required: false
         type: string
@@ -92,8 +92,8 @@ jobs:
       - name: Get Java cache variable
         id: java_cache
         run:  echo "::set-output name=cache_type::$( ( [[ '${{ inputs.build_type }}' == *maven* ]] && echo 'maven' ) || ( [[ '${{ inputs.build_type }}' == *gradle* ]] && echo 'gradle' ) || echo '' )"
-      - name: Set up Java with cache
-        if: ${{ contains(inputs.build_type, 'maven') || contains(inputs.build_type, 'gradle') || contains(inputs.build_type, 'sbt') }}
+      - name: Set up Java with/without cache
+        if: ${{ contains(inputs.build_type, 'maven') || contains(inputs.build_type, 'gradle') || contains(inputs.build_type, 'sbt') || contains(inputs.build_type, 'java') }}
         uses: actions/setup-java@v3
         with:
           java-version: '${{ inputs.java_version }}'
