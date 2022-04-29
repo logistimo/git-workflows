@@ -27,6 +27,11 @@ on:
         type: string
         default: '11'
         description: "Version of Node, if used"
+      gradle_version:
+        required: false
+        type: string
+        default: ''
+        description: "Version of gradle, if needed"
       skip_scanning:
         required: false
         type: boolean
@@ -99,6 +104,10 @@ jobs:
           java-version: '${{ inputs.java_version }}'
           distribution: 'temurin'
           cache: ${{ steps.java_cache.outputs.cache_type }}
+      - uses: gradle/gradle-build-action@v2
+        if: ${{ contains(inputs.build_type, 'gradle') && inputs.gradle_version != '' }}
+        with:
+          gradle-version: ${{ inputs.gradle_version }}
       - name: Set up Node
         if: ${{ contains(inputs.build_type, 'node') }}
         uses: actions/setup-node@v2
