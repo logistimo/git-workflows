@@ -1,2 +1,2 @@
 # .github
-Special repository to store organization wide files
+Repository to store public workflow files
