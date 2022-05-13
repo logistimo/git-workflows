@@ -73,8 +73,9 @@ jobs:
         with:
           name: ${{ inputs.artifacts_name }}
       - name: Notify on Slack
-        uses: rtCamp/action-slack-notify@v2
+        uses: slackapi/slack-github-action@v1.19.0
+        with:
+          channel-id: 'builds'
+          slack-message: "GitHub build result: ${{ job.status }}\nPushed ${{ inputs.image_tag }} to ${{ inputs.repository_name }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: 'Image ${{ inputs.image_tag }} pushed to ECR repo ${{ inputs.repository_name }}'
-          SLACK_COLOR: ${{ job.status }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
