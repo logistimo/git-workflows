@@ -75,7 +75,7 @@ jobs:
       - name: Notify on Slack
         uses: slackapi/slack-github-action@v1.19.0
         with:
-          channel-id: 'builds'
+          channel-id: 'C03EN50UX0C'
           slack-message: "GitHub build result: ${{ job.status }}\nPushed ${{ inputs.image_tag }} to ${{ inputs.repository_name }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
