@@ -72,3 +72,9 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: ${{ inputs.artifacts_name }}
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: 'Image ${{ inputs.image_tag }} pushed to ECR repo ${{ inputs.repository_name }}'
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
