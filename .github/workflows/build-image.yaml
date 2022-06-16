@@ -27,6 +27,11 @@ on:
         type: string
         default: ''
         description: "Docker build arguments such as '--build-arg=X=Y --build-arg=A=B'"
+      external_image:
+        required: false
+        type: string
+        default: ''
+        description: "Use an externally built image, say, snapshot:latest, as built by Jib"
       aws_region:
         required: true
         type: string
@@ -64,7 +69,15 @@ jobs:
           IMAGE_TAG: ${{ inputs.image_tag }}
           BRANCH_TAG: ${{ github.ref_name }}
         run: |
-          docker build ${{ inputs.build_arguments }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG .
+          if [[ "${{ inputs.external_image }}" == "" ]]
+          then
+            echo "Building docker image..."
+            docker build ${{ inputs.build_arguments }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG .
+          else
+            echo "Tagging (not building) external docker image" ${{ inputs.external_image }} "..."
+            docker tag ${{ inputs.external_image }} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            docker tag ${{ inputs.external_image }} $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG
+          fi
           docker push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
           echo "Pushed image with tags" $IMAGE_TAG "and" $BRANCH_TAG
       - name: Remove artifacts (optional)
