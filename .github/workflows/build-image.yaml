@@ -31,7 +31,7 @@ on:
         required: false
         type: string
         default: ''
-        description: "Name of an externally built container image file, say, sanpshot, as built by, say, jib"
+        description: "Name of an externally built container image file, say, snapshot, as built by, say, jib"
       external_image_file:
         required: false
         type: string
