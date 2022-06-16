@@ -80,7 +80,7 @@ jobs:
             docker build ${{ inputs.build_arguments }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG .
           else
             echo "Loading external docker image file" ${{ inputs.external_image_file }} "..."
-            docker load < ${{ inputs.external_image_file }}
+            docker load --input ${{ inputs.external_image_file }}
             echo "Tagging external docker image" ${{ inputs.external_image_name }} "..."
             docker tag ${{ inputs.external_image_name }} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
             docker tag ${{ inputs.external_image_name }} $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG
