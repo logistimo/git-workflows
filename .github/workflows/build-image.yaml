@@ -50,6 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
+        if: ${{ inputs.external_image != '' }}
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.artifacts_name }}
