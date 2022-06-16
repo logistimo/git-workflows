@@ -27,11 +27,11 @@ on:
         type: string
         default: ''
         description: "Docker build arguments such as '--build-arg=X=Y --build-arg=A=B'"
-      external_image:
+      external_image_file:
         required: false
         type: string
         default: ''
-        description: "Use an externally built image, say, snapshot:latest, as built by Jib"
+        description: "Use an externally built container image file, say, snapshot.tag.gz - obtained via docker save"
       aws_region:
         required: true
         type: string
@@ -74,7 +74,9 @@ jobs:
             echo "Building docker image..."
             docker build ${{ inputs.build_arguments }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG .
           else
-            echo "Tagging (not building) external docker image" ${{ inputs.external_image }} "..."
+            echo "Loading external docker image file..."
+            docker load < ${{ inputs.external_image }}
+            echo "Tagging external docker image" ${{ inputs.external_image }} "..."
             docker tag ${{ inputs.external_image }} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
             docker tag ${{ inputs.external_image }} $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_TAG
           fi
