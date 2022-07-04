@@ -48,6 +48,9 @@ on:
       aws_secret_access_key:
         required: true
         description: "AWS IAM user's secret access key"
+      slack_bot_token:
+        required: false
+        description: "Slack bot token, if provided, will notify image tags to slack builds channel"
 
 jobs:
   build_push_image:
@@ -92,7 +95,7 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: ${{ inputs.artifacts_name }}
-      - name: Post to Slack channel 'builds'
+      - name: Notify to Slack 'builds'
         id: slack
         uses: slackapi/slack-github-action@v1.19.0
         with:
@@ -102,4 +105,4 @@ jobs:
           # For posting a simple plain text message
           slack-message: "Pushed image with tags ${{ inputs.image_tag }}, ${{ github.ref_name }} to ${{ inputs.repository_name }}"
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ secrets.slack_bot_token }}
