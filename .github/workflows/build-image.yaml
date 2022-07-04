@@ -93,13 +93,13 @@ jobs:
         with:
           name: ${{ inputs.artifacts_name }}
       - name: Post to Slack channel 'builds'
-          id: slack
-          uses: slackapi/slack-github-action@v1.19.0
-          with:
-            # Slack channel id, channel name, or user id to post message.
-            # See also: https://api.slack.com/methods/chat.postMessage#channels
-            channel-id: 'C03EN50UX0C'
-            # For posting a simple plain text message
-            slack-message: "Pushed image with tags ${{ inputs.image_tag }}, ${{ github.ref_name }} to ${{ inputs.repository_name }}"
-          env:
-            SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        id: slack
+        uses: slackapi/slack-github-action@v1.19.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: 'C03EN50UX0C'
+          # For posting a simple plain text message
+          slack-message: "Pushed image with tags ${{ inputs.image_tag }}, ${{ github.ref_name }} to ${{ inputs.repository_name }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
