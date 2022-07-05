@@ -95,9 +95,8 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: ${{ inputs.artifacts_name }}
-      - name: Notify 'success' to Slack 'builds'
-        if: job.status == 'success'
-        id: slack
+      - name: Notify success to Slack 'builds'
+        if: ${{ job.status == 'success' }}
         uses: slackapi/slack-github-action@v1.19.0
         with:
           # Slack channel id, channel name, or user id to post message.
@@ -107,9 +106,8 @@ jobs:
           slack-message: "Pushed image with tags ${{ inputs.image_tag }}, ${{ github.ref_name }} to ${{ inputs.repository_name }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack_bot_token }}
-      - name: Notify to Slack 'builds'
-        if: job.status == 'failure'
-        id: slack
+      - name: Notify failure to Slack 'builds'
+        if: ${{ job.status == 'failure' }}
         uses: slackapi/slack-github-action@v1.19.0
         with:
           # Slack channel id, channel name, or user id to post message.
