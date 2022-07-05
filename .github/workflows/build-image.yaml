@@ -95,7 +95,8 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: ${{ inputs.artifacts_name }}
-      - name: Notify to Slack 'builds'
+      - name: Notify 'success' to Slack 'builds'
+        if: job.status == 'success'
         id: slack
         uses: slackapi/slack-github-action@v1.19.0
         with:
@@ -104,5 +105,17 @@ jobs:
           channel-id: 'C03EN50UX0C'
           # For posting a simple plain text message
           slack-message: "Pushed image with tags ${{ inputs.image_tag }}, ${{ github.ref_name }} to ${{ inputs.repository_name }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.slack_bot_token }}
+      - name: Notify to Slack 'builds'
+        if: job.status == 'failure'
+        id: slack
+        uses: slackapi/slack-github-action@v1.19.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: 'C03EN50UX0C'
+          # For posting a simple plain text message
+          slack-message: "Image build failed for ${{ inputs.repository_name }} with tags ${{ inputs.image_tag }}, ${{ github.ref_name }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack_bot_token }}
