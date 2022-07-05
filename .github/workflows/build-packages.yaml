@@ -83,6 +83,7 @@ on:
 
 jobs:
   install_packages:
+    if: github.actor != "dependabot[bot]"
     name: Build, scan and test (optional)
     runs-on: ubuntu-latest
     outputs:

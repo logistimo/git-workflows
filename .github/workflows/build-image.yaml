@@ -55,6 +55,7 @@ on:
 jobs:
   build_push_image:
     name: Build and push image to AWS ECR
+    if: github.actor != "dependabot[bot]"
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
