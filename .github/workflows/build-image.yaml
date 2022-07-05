@@ -104,7 +104,7 @@ jobs:
           # See also: https://api.slack.com/methods/chat.postMessage#channels
           channel-id: 'C03EN50UX0C'
           # For posting a simple plain text message
-          slack-message: "Pushed ${{ inputs.repository_name }} image with tags ${{ inputs.image_tag }}, ${{ github.ref_name }}\nhttps://github.com/${{ github.repository }}/runs/${{ github.run_id }}?check_suite_focus=true"
+          slack-message: "Pushed ${{ inputs.repository_name }} image with tags ${{ inputs.image_tag }}, ${{ github.ref_name }}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}?check_suite_focus=true"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack_bot_token }}
       - name: Notify failure to Slack 'builds'
@@ -115,6 +115,6 @@ jobs:
           # See also: https://api.slack.com/methods/chat.postMessage#channels
           channel-id: 'C03EN50UX0C'
           # For posting a simple plain text message
-          slack-message: "Image build failed for ${{ inputs.repository_name }} with tags ${{ inputs.image_tag }}, ${{ github.ref_name }}\nhttps://github.com/${{ github.repository }}/runs/${{ github.run_id }}?check_suite_focus=true"
+          slack-message: "Image build failed for ${{ inputs.repository_name }} with tags ${{ inputs.image_tag }}, ${{ github.ref_name }}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}?check_suite_focus=true"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.slack_bot_token }}
