@@ -131,8 +131,8 @@ jobs:
         id: vars
         working-directory: ${{ inputs.working_directory }}
         run: |
-          echo "::set-output name=app_version::$(buildscripts/getversion.sh)"
-          echo "::set-output name=short_commit_sha::$(git rev-parse --short HEAD)"
+          echo "app_version=$(buildscripts/getversion.sh)"  >> $GITHUB_OUTPUT
+          echo "short_commit_sha=$(git rev-parse --short HEAD)"  >> $GITHUB_OUTPUT
       - name: Build packages
         working-directory: ${{ inputs.working_directory }}
         run: buildscripts/build.sh ${{ inputs.build_target }} ${{ steps.vars.outputs.app_version }} ${{ secrets.packages_user }} ${{ secrets.packages_access_token }}
