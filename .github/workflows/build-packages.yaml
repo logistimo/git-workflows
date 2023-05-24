@@ -64,7 +64,7 @@ on:
         description: "Stored artifacts name, if needed"
       sonarqube_major_version:
         required: false
-        type: integer
+        type: number
         default: 9
         description: "Sonarqube major version, if needed, since JDK 11 is required at a minimum for version 9.x and above"
     secrets:
