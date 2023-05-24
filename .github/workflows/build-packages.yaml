@@ -151,7 +151,7 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Scan code
-        if: ${{ !inputs.skip_scanning }}
+        if: ${{ !(inputs.skip_scanning || inputs.sonar_host_url == '' ) }}
         working-directory: ${{ inputs.working_directory }}
         run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }} ${{ inputs.sonar_host_url }}
       - name: Copy artifacts (optional)
