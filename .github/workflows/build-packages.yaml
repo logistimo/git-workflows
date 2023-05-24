@@ -141,6 +141,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
+          distribution: 'temurin'
       - name: Cache SonarQube packages
         if: ${{ inputs.sonarqube_major_version >= 9 }}
         uses: actions/cache@v3
