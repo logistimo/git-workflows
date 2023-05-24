@@ -62,6 +62,11 @@ on:
         type: string
         default: ''
         description: "Stored artifacts name, if needed"
+      sonar_host_url:
+        required: false
+        type: string
+        default: ''
+        description: "Sonar host URL for code analysis, if given"
     secrets:
       packages_user:
         required: true
@@ -148,7 +153,7 @@ jobs:
       - name: Scan code
         if: ${{ !inputs.skip_scanning }}
         working-directory: ${{ inputs.working_directory }}
-        run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }}
+        run: buildscripts/scan.sh ${{ steps.vars.outputs.app_version }} ${{ steps.vars.outputs.short_commit_sha }} ${{ secrets.sonar_access_token }} ${{ inputs.sonar_host_url }}
       - name: Copy artifacts (optional)
         if: ${{ inputs.store_artifacts }}
         working-directory: ${{ inputs.working_directory }}
