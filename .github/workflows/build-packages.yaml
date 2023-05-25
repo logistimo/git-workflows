@@ -102,7 +102,7 @@ jobs:
           token: ${{ secrets.packages_access_token }}
       - name: Get Java cache variable
         id: java_cache
-        run:  echo "::set-output name=cache_type::$( ( [[ '${{ inputs.build_type }}' == *maven* ]] && echo 'maven' ) || ( [[ '${{ inputs.build_type }}' == *gradle* ]] && echo 'gradle' ) || echo '' )"
+        run:  echo "cache_type=$( ( [[ '${{ inputs.build_type }}' == *maven* ]] && echo 'maven' ) || ( [[ '${{ inputs.build_type }}' == *gradle* ]] && echo 'gradle' ) || echo '' )" >> $GITHUB_OUTPUT
       - name: Set up Java with/without cache
         if: ${{ contains(inputs.build_type, 'maven') || contains(inputs.build_type, 'gradle') || contains(inputs.build_type, 'sbt') || contains(inputs.build_type, 'java') }}
         uses: actions/setup-java@v3
