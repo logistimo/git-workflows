@@ -160,7 +160,7 @@ jobs:
         run: buildscripts/copyartifacts.sh __artifacts
       - name: Upload artifacts (optional)
         if: ${{ inputs.store_artifacts }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifacts_name }}
           path: ${{ inputs.working_directory }}/__artifacts
