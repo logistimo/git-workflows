@@ -110,6 +110,21 @@ jobs:
           java-version: '${{ inputs.java_version }}'
           distribution: 'temurin'
           cache: ${{ steps.java_cache.outputs.cache_type }}
+      - name: Install sbt
+        if: ${{ contains(inputs.build_type, 'sbt') }}
+        uses: coursier/setup-action@v1
+        with:
+          apps: sbt
+      - name: Cache SBT & Ivy
+        if: ${{ contains(inputs.build_type, 'sbt') }}
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: sbt-cache-${{ runner.os }}-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('**/build.properties') }}
+          restore-keys: |
+            sbt-cache-${{ runner.os }}-
       - uses: gradle/gradle-build-action@v2
         if: ${{ contains(inputs.build_type, 'gradle') && inputs.gradle_version != '' }}
         with:
