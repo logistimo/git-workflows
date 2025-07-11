@@ -131,7 +131,7 @@ jobs:
           gradle-version: ${{ inputs.gradle_version }}
       - name: Set up Node
         if: ${{ contains(inputs.build_type, 'node') }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '${{ inputs.node_version }}'
           cache: 'npm'
@@ -175,7 +175,7 @@ jobs:
         run: buildscripts/copyartifacts.sh __artifacts
       - name: Upload artifacts (optional)
         if: ${{ inputs.store_artifacts }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifacts_name }}
           path: ${{ inputs.working_directory }}/__artifacts
