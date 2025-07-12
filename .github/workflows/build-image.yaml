@@ -98,7 +98,7 @@ jobs:
           echo "Pushed image with tags" $IMAGE_TAG "and" $BRANCH_TAG
       - name: Remove artifacts (optional)
         if: ${{ inputs.remove_artifacts }}
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ inputs.artifacts_name }}
       - name: Notify success to Slack 'builds'
